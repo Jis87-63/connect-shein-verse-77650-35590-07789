@@ -27,7 +27,7 @@ export const Navbar = ({ isAdmin, showAuthButtons }: NavbarProps) => {
             <span className="text-primary-foreground font-bold text-sm">SM</span>
           </div>
           <h1 className="text-xl font-semibold text-foreground">
-            Comunidade
+            Shein Abdala
           </h1>
         </div>
         

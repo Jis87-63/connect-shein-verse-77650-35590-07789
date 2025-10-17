@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Heart, MessageCircle, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -108,6 +109,15 @@ export const PostCard = ({
     return text.substring(0, maxLength) + "...";
   };
 
+  const extractHashtags = (text: string): string[] => {
+    const hashtagRegex = /#[\w\u00C0-\u024F]+/g;
+    return text.match(hashtagRegex) || [];
+  };
+
+  const removeHashtags = (text: string): string => {
+    return text.replace(/#[\w\u00C0-\u024F]+/g, '').trim();
+  };
+
   return (
     <Card 
       className="p-3 bg-card border border-border/50 hover:border-primary/20 hover:shadow-lg transition-all duration-300 cursor-pointer group"
@@ -121,8 +131,8 @@ export const PostCard = ({
             </h3>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className="flex items-center gap-1 font-medium text-foreground">
-                suporte.abdala.shein
-                <BadgeCheck className="h-3.5 w-3.5 text-primary fill-primary" />
+                shein-abdala
+                <BadgeCheck className="h-3 w-3 text-primary fill-primary/20 stroke-primary stroke-2" />
               </span>
               <span>•</span>
               <span>
@@ -146,8 +156,22 @@ export const PostCard = ({
         )}
 
         <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-          {truncateContent(content)}
+          {truncateContent(removeHashtags(content))}
         </p>
+
+        {extractHashtags(content).length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {extractHashtags(content).map((tag, index) => (
+              <Badge 
+                key={index} 
+                variant="secondary" 
+                className="text-xs px-2 py-0.5 rounded-full font-normal"
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center gap-2 pt-1 border-t border-border/40">
           <Button

@@ -3,6 +3,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ExternalLink, FileText, Heart, BadgeCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
@@ -103,6 +104,15 @@ export const PostDetail = ({ post, open, onOpenChange, userId }: PostDetailProps
     }
   };
 
+  const extractHashtags = (text: string): string[] => {
+    const hashtagRegex = /#[\w\u00C0-\u024F]+/g;
+    return text.match(hashtagRegex) || [];
+  };
+
+  const removeHashtags = (text: string): string => {
+    return text.replace(/#[\w\u00C0-\u024F]+/g, '').trim();
+  };
+
   if (!post) return null;
 
   return (
@@ -112,8 +122,8 @@ export const PostDetail = ({ post, open, onOpenChange, userId }: PostDetailProps
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-sm">
               <span className="flex items-center gap-1.5 font-semibold text-foreground">
-                suporte.abdala.shein
-                <BadgeCheck className="h-4 w-4 text-primary fill-primary" />
+                shein-abdala
+                <BadgeCheck className="h-4 w-4 text-primary fill-primary/20 stroke-primary stroke-2" />
               </span>
               <span className="text-muted-foreground">•</span>
               <span className="text-muted-foreground">
@@ -141,8 +151,22 @@ export const PostDetail = ({ post, open, onOpenChange, userId }: PostDetailProps
           )}
 
           <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap text-base">
-            {post.content}
+            {removeHashtags(post.content)}
           </p>
+
+          {extractHashtags(post.content).length > 0 && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              {extractHashtags(post.content).map((tag, index) => (
+                <Badge 
+                  key={index} 
+                  variant="secondary" 
+                  className="text-sm px-3 py-1 rounded-full font-normal"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           <div className="flex flex-wrap items-center gap-3 pt-6 border-t border-border/50">
             <Button
