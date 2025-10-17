@@ -20,8 +20,6 @@ const postSchema = z.object({
   externalUrl: z.string().url("URL inválida").optional().or(z.literal("")),
 });
 
-const ADMIN_CODE = "MADARA";
-
 const Admin = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
